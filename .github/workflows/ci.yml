@@ -1,0 +1,25 @@
+# Build and deploy to pages
+name: Build movie pages
+concurrency:
+  cancel-in-progress: true
+  group: "pages"
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+jobs:
+  build-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup NPM
+        uses: actions/setup-node@v6
+        with:
+          check-latest: false
+          node-version: "25.9.0"
+      - name: Check NPM
+        run: npm -v
