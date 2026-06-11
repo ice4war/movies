@@ -1,7 +1,7 @@
 # Build and deploy to pages
 name: Build movie pages
 concurrency:
-  cancel-in-progress: true
+  cancel-in-progress: false
   group: "pages"
 on:
   push:
