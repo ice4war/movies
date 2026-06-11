@@ -16,10 +16,28 @@ jobs:
   build-pages:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup NPM
-        uses: actions/setup-node@v6
-        with:
-          check-latest: false
-          node-version: "25.9.0"
-      - name: Check NPM
-        run: npm -v
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup NPM
+      uses: actions/setup-node@v6
+      with:
+        check-latest: false
+        node-version: "25.9.0"
+    - name: Build with NPM
+      run: npm run build
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./dist
+  deploy-pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-pages
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
