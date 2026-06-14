@@ -160,4 +160,4 @@ threads = sites.map do |g|
   end
 end
 threads.each(&:join)
-# cleanup '../src/data/final.json'
+cleanup '../src/data/final.json'

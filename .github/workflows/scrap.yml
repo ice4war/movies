@@ -1,4 +1,4 @@
-name: Scheduled update
+name: Gather data
 on:
   schedule:
     - cron: "0 0 */2 * *" # every 2 days

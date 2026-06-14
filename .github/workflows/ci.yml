@@ -1,5 +1,4 @@
-# Build and deploy to pages
-name: Build movie pages
+name: Build Github pages
 concurrency:
   cancel-in-progress: false
   group: "pages"
