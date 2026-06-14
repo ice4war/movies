@@ -1,4 +1,4 @@
-name: 📅 Schedule Workflow Dispatch
+name: Scheduled update
 on:
   schedule:
     - cron: "0 0 */2 * *" # every 2 days
