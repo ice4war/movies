@@ -139,7 +139,7 @@ end
 
 base_url = ENV['SITE_URL']
 sites = ('a'..'z').to_a
-hydra = Typhoeus::Hydra.new(max_concurrency: 100)
+hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 
 threads = sites.map do |g|
   Thread.new do
