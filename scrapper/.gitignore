@@ -1,0 +1,4 @@
+.env
+.solargraph.yml
+Gemfile.lock
+urls/

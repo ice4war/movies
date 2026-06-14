@@ -4,37 +4,51 @@ sidebar: false
 ---
 
 <div class="hero">
-  <h1>Movies</h1>
-  <h2>Welcome to your new Movies site!</h2>
+  <h1></h1>
+  <h2>Search your favourite Movies!</h2>
 </div>
 
 ```js
-import * as d3 from "d3";
-const movies = await FileAttachment("./data/final.json").json();
-const unique_years = [...new Set(movies.map((d) => d.year))].sort(
+import { card } from "./components/card.js";
+const movieData = await FileAttachment("./data/final.json").json();
+```
+
+```js
+const unique_years = [...new Set(movies.map((d) => d.year)).add("All")].sort(
   (a, b) => b - a,
 );
-const years = Inputs.select(unique_years, {
+const select_year = Inputs.select(unique_years, {
   value: "2026",
 });
-const selected_year = Generators.input(years);
+const selected_year = Generators.input(select_year);
 ```
 
 ```js
-const selected_movies = movies
-  .filter((d) => d.year === selected_year)
-  .sort((a, b) => new Date(b.updated) - new Date(a.updated));
-const dark = Generators.dark();
+const movies = movieData.filter((e) => e.updated !== null);
 ```
 
 ```js
-import { card } from "./components/card.js";
+const selected_movies =
+  selected_year === "All"
+    ? movies
+    : movies
+        .filter((d) => d.year === selected_year)
+        .sort((a, b) => new Date(b.updated) - new Date(a.updated));
+const search = Inputs.search(selected_movies, {
+  placeholder: "Search Movie...",
+  columns: ["name"],
+  autocomplete: false,
+  disabled: false,
+  format: (e) => "",
+});
+const searched_movie = Generators.input(search);
 ```
 
-${years}
-
-<!--${display(Inputs.table(selected_movies))}-->
+<div class="search-nav">
+${search}
+${select_year}
+</div>
 
 <ul>
-${selected_movies.map(d=>card(d))}
+${searched_movie.map(d=>card(d))}
 </ul>
