@@ -125,8 +125,7 @@ def cleanup(outfile)
 end
 
 base_url = ENV['SITE_URL']
-years = (2015..2026).to_a.prepend 2012
-# years = [2026]
+years = (2015..2026).to_a
 hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 
 threads = years.map do |year|
