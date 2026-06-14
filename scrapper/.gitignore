@@ -2,3 +2,4 @@
 .solargraph.yml
 Gemfile.lock
 urls/
+data/

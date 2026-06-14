@@ -3,6 +3,8 @@
 require 'json'
 require 'nokogiri'
 require 'typhoeus'
+require 'async'
+
 class Spider
   def initialize(base_url, current = 1)
     @links = Set.new
@@ -39,7 +41,7 @@ class Spider
     @links
   end
 
-  def movie_info(doc, url, year)
+  def movie_info(doc, url)
     # doc = get_html url
     img = begin
       doc.css('.movie-info-container picture img')[0][:src]
@@ -84,9 +86,21 @@ class Spider
     rescue StandardError
       ''
     end
+    name, year = begin
+      info[0].to_s.split('(')
+    rescue StandardError
+      ['', '']
+    end
+    begin
+      name = name.strip
+      year = year.slice(0..3)
+    rescue StandardError
+      name = ''
+      year = ''
+    end
     details = {
-      name: info[0].to_s.sub(/\s\(.*/, ''),
-      year: year.to_s,
+      name: name,
+      year: year,
       url: url,
       poster: "#{@base_url}#{img}",
       description: description,
@@ -125,26 +139,26 @@ def cleanup(outfile)
 end
 
 base_url = ENV['SITE_URL']
-years = (2015..2026).to_a
-hydra = Typhoeus::Hydra.new(max_concurrency: 50)
+sites = ('a'..'z').to_a
+hydra = Typhoeus::Hydra.new(max_concurrency: 100)
 
-threads = years.map do |year|
+threads = sites.map do |g|
   Thread.new do
-    page = "#{base_url}/tamil-#{year}-movies"
+    page = "#{base_url}/tamil-movies/#{g}"
 
     crawler = Spider.new base_url, 1
-    links = crawler.crawl(page, "urls/#{year}_urls.json")
+    links = crawler.crawl(page, "urls/#{g}_urls.json")
     links.each do |link|
       req = Typhoeus::Request.new link
       req.on_complete do |res|
         doc = Nokogiri::HTML5(res.response_body)
-        crawler.movie_info doc, link, year
+        crawler.movie_info doc, link
       end
       hydra.queue(req)
     end
     hydra.run
-    crawler.save_json("data/#{year}.json")
+    crawler.save_json("data/#{g}.json")
   end
 end
 threads.each(&:join)
-cleanup "../src/data/final.json"
+# cleanup '../src/data/final.json'

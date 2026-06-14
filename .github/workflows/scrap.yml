@@ -23,7 +23,7 @@ jobs:
         env:
           SITE_URL: ${{vars.site_url}}
         run: |
-          bundle install && mkdir urls
+          bundle install && mkdir {urls,data}
           ruby scrapper.rb
       - name: Commit Changes
         run: |
