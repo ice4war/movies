@@ -25,9 +25,8 @@ jobs:
           ruby scrapper.rb
       - name: Commit Changes
         run: |
-            find .
-          # git config user.name "github-actions[bot]"
-          # git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # git add final.json
-          # git commit -m "Update movies" || echo "No changes"
-          # git push
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ./src/data/final.json
+          git commit -m "Update movies" || echo "No changes"
+          git push origin main
