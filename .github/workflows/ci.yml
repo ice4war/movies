@@ -4,7 +4,7 @@ concurrency:
   cancel-in-progress: false
   group: "pages"
 on:
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -16,21 +16,21 @@ jobs:
   build-pages:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-    - name: Setup NPM
-      uses: actions/setup-node@v6
-      with:
-        check-latest: false
-        node-version: "25.9.0"
-    - name: Build with NPM
-      run: npm i && npm run build
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./dist
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+        with:
+          submodules: recursive
+      - name: Setup NPM
+        uses: actions/setup-node@v6
+        with:
+          check-latest: false
+          node-version: "25.9.0"
+      - name: Build with NPM
+        run: npm i && npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
   deploy-pages:
     environment:
       name: github-pages
