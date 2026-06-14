@@ -16,6 +16,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1.313.0
         with:
+          ruby-version: 3.4.8
           bundler-cache: true
       - name: Fetch Data
         working-directory: ./scrapper
