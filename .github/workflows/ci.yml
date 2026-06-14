@@ -2,10 +2,10 @@ name: Build Github pages
 concurrency:
   cancel-in-progress: false
   group: "pages"
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 permissions:
   contents: read
