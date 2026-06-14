@@ -4,7 +4,7 @@ concurrency:
   cancel-in-progress: false
   group: "pages"
 on:
-  pull_request:
+  push:
     branches:
       - main
   workflow_dispatch:
