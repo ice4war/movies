@@ -3,7 +3,6 @@
 require 'json'
 require 'nokogiri'
 require 'typhoeus'
-require 'async'
 
 class Spider
   def initialize(base_url, current = 1)
