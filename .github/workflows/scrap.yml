@@ -12,8 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.3
         with:
-          fetch-depth: 0 
-          persist-credentials: false 
+          fetch-depth: 0
+          persist-credentials: true
         env:
           GITHUB_TOKEN: ${{secrets.GIT_PAT}}
       - name: Setup Ruby
