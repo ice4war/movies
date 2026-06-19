@@ -35,6 +35,3 @@ jobs:
           git add ./src/data/final.json
           git commit -m "Update movies" || echo "No changes"
           git push origin main
-  use-deploy:
-    needs: update-data
-    uses: ./.github/workflows/ci.yml
