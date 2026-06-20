@@ -85,7 +85,7 @@ class Spider
     rescue StandardError
       ''
     end
-    name, year = begin
+    year, name = begin
       tmp = info[0].to_s.reverse.split('(')
       [
         tmp[0].slice(1..4).reverse,
