@@ -85,15 +85,13 @@ class Spider
     rescue StandardError
       ''
     end
-    year, name = begin
-      tmp = info[0].to_s.strip
-      [
-        tmp.scan(/\d{4}/)[-1],
-        tmp.gsub(/\(\d{4}\)/, '').strip
-      ]
-    rescue StandardError
-      ['0000', doc.css('title').text.to_s.split("(")[0].strip]
-    end
+    tmp = info[0].to_s.strip
+    year = tmp.scan(/\d{4}/)[-1]
+    name = tmp.gsub(/\(\d{4}\)/, '').strip
+    title = doc.css('title').text
+    name = name.empty? ? title.to_s.split('(')[0] : name
+    year = year.nil? ? '0000' : year
+
     details = {
       name: name,
       year: year,
@@ -126,7 +124,7 @@ def cleanup(outfile)
     raw = File.read "./data/#{f}"
     json_data = JSON.parse(raw)
     json_data.each do |a|
-      data.add a unless a['name'].nil? && data.contains(a)
+      data.add a unless a['name'].nil? && data.include?(a)
     end
   end
   File.open(outfile, 'w') do |f|
@@ -135,7 +133,7 @@ def cleanup(outfile)
 end
 
 base_url = ENV['SITE_URL']
-sites = ('a'..'z').to_a
+('a'..'z').to_a
 hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 pages = Set.new
 sites.each do |s|
