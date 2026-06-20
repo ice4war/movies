@@ -133,7 +133,7 @@ def cleanup(outfile)
 end
 
 base_url = ENV['SITE_URL']
-('a'..'z').to_a
+sites = ('a'..'z').to_a
 hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 pages = Set.new
 sites.each do |s|
