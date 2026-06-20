@@ -134,8 +134,7 @@ def cleanup(outfile)
   end
 end
 
-# base_url = ENV['SITE_URL']
-base_url = 'https://moviesda32.com'
+base_url = ENV['SITE_URL']
 sites = ('a'..'z').to_a
 hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 pages = Set.new
