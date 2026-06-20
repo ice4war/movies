@@ -86,16 +86,13 @@ class Spider
       ''
     end
     name, year = begin
-      info[0].to_s.split('(')
+      tmp = info[0].to_s.reverse.split('(')
+      [
+        tmp[0].slice(1..4).reverse,
+        tmp[1..tmp.length].join.gsub(/\)/, '').reverse.strip
+      ]
     rescue StandardError
       ['', '']
-    end
-    begin
-      name = name.strip
-      year = year.slice(0..3)
-    rescue StandardError
-      name = ''
-      year = ''
     end
     details = {
       name: name,
