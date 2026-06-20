@@ -120,23 +120,23 @@ class Spider
 end
 
 def cleanup(outfile)
-  data = []
+  data = Set.new
   files = Dir.children('data')
   files.each do |f|
     raw = File.read "./data/#{f}"
     json_data = JSON.parse(raw)
     json_data.each do |a|
-      data.append a unless a['name'].nil? && a['name'] != ''
+      data.add a unless a['name'].nil? && data.contains(a)
     end
   end
   File.open(outfile, 'w') do |f|
-    f.write(data.to_json)
+    f.write(data.to_a.to_json)
   end
 end
 
 base_url = ENV['SITE_URL']
 sites = ('a'..'z').to_a
-hydra = Typhoeus::Hydra.new(max_concurrency: 25)
+hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 pages = Set.new
 sites.each do |s|
   pages.add "#{base_url}/tamil-movies/#{s}"
@@ -145,7 +145,7 @@ pages.add "#{base_url}/tamil-2026-movies"
 
 threads = pages.map do |page|
   Thread.new do
-    file = page.split("/")[-1]
+    file = page.split('/')[-1]
     crawler = Spider.new base_url, 1
     links = crawler.crawl(page, "urls/#{file}_urls.json")
     links.each do |link|

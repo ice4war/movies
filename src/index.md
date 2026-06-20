@@ -24,7 +24,8 @@ const selected_year = Generators.input(select_year);
 ```
 
 ```js
-const movies = movieData.filter((e) => e.updated !== null);
+// const movies = movieData.filter((e) => e.updated !== null);
+const movies = movieData;
 ```
 
 ```js
