@@ -88,15 +88,15 @@ class Spider
     year, name = begin
       tmp = info[0].to_s.strip
       [
-        tmp.scan(/\d{4}/),
+        tmp.scan(/\d{4}/)[-1],
         tmp.gsub(/\(\d{4}\)/, '').strip
       ]
     rescue StandardError
-      ['', '']
+      ['0000', doc.css('title').text.to_s.split("(")[0].strip]
     end
     details = {
       name: name,
-      year: year[-1],
+      year: year,
       url: url,
       poster: "#{@base_url}#{img}",
       description: description,
