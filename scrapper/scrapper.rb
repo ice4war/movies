@@ -96,7 +96,7 @@ class Spider
     end
     details = {
       name: name,
-      year: year,
+      year: year[-1],
       url: url,
       poster: "#{@base_url}#{img}",
       description: description,
@@ -136,7 +136,7 @@ end
 
 base_url = ENV['SITE_URL']
 sites = ('a'..'z').to_a
-hydra = Typhoeus::Hydra.new(max_concurrency: 50)
+hydra = Typhoeus::Hydra.new(max_concurrency: 25)
 pages = Set.new
 sites.each do |s|
   pages.add "#{base_url}/tamil-movies/#{s}"
