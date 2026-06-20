@@ -86,10 +86,10 @@ class Spider
       ''
     end
     year, name = begin
-      tmp = info[0].to_s.reverse.split('(')
+      tmp = info[0].to_s.strip
       [
-        tmp[0].slice(1..4).reverse,
-        tmp[1..tmp.length].join.gsub(/\)/, '').reverse.strip
+        tmp.scan(/\d{4}/),
+        tmp.gsub(/\(\d{4}\)/, '').strip
       ]
     rescue StandardError
       ['', '']
@@ -134,16 +134,21 @@ def cleanup(outfile)
   end
 end
 
-base_url = ENV['SITE_URL']
+# base_url = ENV['SITE_URL']
+base_url = 'https://moviesda32.com'
 sites = ('a'..'z').to_a
 hydra = Typhoeus::Hydra.new(max_concurrency: 50)
+pages = Set.new
+sites.each do |s|
+  pages.add "#{base_url}/tamil-movies/#{s}"
+end
+pages.add "#{base_url}/tamil-2026-movies"
 
-threads = sites.map do |g|
+threads = pages.map do |page|
   Thread.new do
-    page = "#{base_url}/tamil-movies/#{g}"
-
+    file = page.split("/")[-1]
     crawler = Spider.new base_url, 1
-    links = crawler.crawl(page, "urls/#{g}_urls.json")
+    links = crawler.crawl(page, "urls/#{file}_urls.json")
     links.each do |link|
       req = Typhoeus::Request.new link
       req.on_complete do |res|
@@ -153,7 +158,7 @@ threads = sites.map do |g|
       hydra.queue(req)
     end
     hydra.run
-    crawler.save_json("data/#{g}.json")
+    crawler.save_json("data/#{file}.json")
   end
 end
 threads.each(&:join)

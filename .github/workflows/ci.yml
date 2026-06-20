@@ -1,8 +1,11 @@
 name: Build Github pages
 on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
   schedule:
     - cron: "0 0 */1 * *" # everyday
-  workflow_dispatch:
 concurrency:
   cancel-in-progress: true
   group: "pages"
