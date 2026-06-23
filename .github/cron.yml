@@ -1,6 +1,5 @@
 name: Build Github pages
 on:
-  workflow_dispatch:
   schedule:
     - cron: "0 0 */1 * *" # everyday
 concurrency:
