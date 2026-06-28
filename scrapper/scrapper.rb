@@ -155,7 +155,7 @@ def run_threads(pages, query, base_url, hydra)
   threads.each(&:join)
 end
 
-hydra = Typhoeus::Hydra.new(max_concurrency: 25)
+hydra = Typhoeus::Hydra.new(max_concurrency: 50)
 pages = Set.new
 sites = ('a'..'z').to_a
 
