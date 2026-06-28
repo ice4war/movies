@@ -18,18 +18,20 @@ class Spider
     Nokogiri::HTML5(html.response.response_body)
   end
 
-  def crawl(page, filename)
+  def crawl(page, filename, page_query)
     @links = Set.new
-    current_page = get_html "#{page}/?page=#{@current}"
+    page_url = "#{page_query}#{@current}"
+    current_page = get_html "#{page}#{page_url}"
     next_page = current_page.css('.next').length
     loop do
-      puts "[+] Crawling : #{page}/?page=#{@current}"
+      puts "[+] Crawling : #{page}#{page_url}"
       current_page.css('.f a').each do |a|
         crawled_url = "#{@base_url}#{a[:href]}"
         @links.add  crawled_url unless @links.include? crawled_url
       end
       @current += 1
-      current_page = get_html "#{page}/?page=#{@current}"
+      page_url = "#{page_query}#{@current}"
+      current_page = get_html "#{page}#{page_url}"
       break if next_page.zero?
 
       next_page = current_page.css('.next').length
@@ -132,31 +134,45 @@ def cleanup(outfile)
   end
 end
 
-base_url = ENV['SITE_URL']
-sites = ('a'..'z').to_a
-hydra = Typhoeus::Hydra.new(max_concurrency: 50)
+def run_threads(pages, query, base_url, hydra)
+  threads = pages.map do |page|
+    Thread.new do
+      file = "#{base_url.split('/')[-1]}_#{page.split('/')[-1]}"
+      crawler = Spider.new base_url, 1
+      links = crawler.crawl(page, "urls/#{file}_urls.json", query)
+      links.each do |link|
+        req = Typhoeus::Request.new link
+        req.on_complete do |res|
+          doc = Nokogiri::HTML5(res.response_body)
+          crawler.movie_info doc, link
+        end
+        hydra.queue(req)
+      end
+      hydra.run
+      crawler.save_json("data/#{file}.json")
+    end
+  end
+  threads.each(&:join)
+end
+
+hydra = Typhoeus::Hydra.new(max_concurrency: 25)
 pages = Set.new
+sites = ('a'..'z').to_a
+
+## Crawl Site1
+base_url = ENV['SITE_URL1']
 sites.each do |s|
   pages.add "#{base_url}/tamil-movies/#{s}"
 end
 pages.add "#{base_url}/tamil-2026-movies"
+run_threads(pages, '/?page=', base_url, hydra)
 
-threads = pages.map do |page|
-  Thread.new do
-    file = page.split('/')[-1]
-    crawler = Spider.new base_url, 1
-    links = crawler.crawl(page, "urls/#{file}_urls.json")
-    links.each do |link|
-      req = Typhoeus::Request.new link
-      req.on_complete do |res|
-        doc = Nokogiri::HTML5(res.response_body)
-        crawler.movie_info doc, link
-      end
-      hydra.queue(req)
-    end
-    hydra.run
-    crawler.save_json("data/#{file}.json")
-  end
+# ## Crawl Site2
+base_url = ENV['SITE_URL2']
+pages.clear
+sites.each do |s|
+  pages.add "#{base_url}/tamil-atoz-dubbed-movies/#{s}"
 end
-threads.each(&:join)
+run_threads(pages, '/', base_url, hydra)
+
 cleanup '../src/data/final.json'
