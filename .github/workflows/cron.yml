@@ -1,4 +1,4 @@
-name: Build Github pages
+name: Update Site
 on:
   schedule:
     - cron: "0 0 */1 * *" # everyday
