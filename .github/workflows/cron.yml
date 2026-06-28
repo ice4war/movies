@@ -27,7 +27,8 @@ jobs:
       - name: Fetch Data
         working-directory: ./scrapper
         env:
-          SITE_URL: ${{vars.site_url}}
+          SITE_URL1: ${{vars.site_url1}}
+          SITE_URL2: ${{vars.site_url2}}
         run: |
           bundle install && mkdir {urls,data}
           ruby scrapper.rb
