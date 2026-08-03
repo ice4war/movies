@@ -1,7 +1,7 @@
 name: Update Site
 on:
-  #schedule:
-  # - cron: "0 0 */1 * *" # everyday
+  schedule:
+   - cron: "0 0 */1 * *" # everyday
   workflow_dispatch:
 
 concurrency:
