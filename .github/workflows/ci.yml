@@ -15,6 +15,8 @@ permissions:
 jobs:
   build-pages:
     runs-on: ubuntu-latest
+    env:
+      RUBY_VERSION: "3.4.12"
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.3
@@ -22,16 +24,21 @@ jobs:
           submodules: recursive
       - name: Setup Ruby
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ruby-full build-essential zlib1g-dev
-          sudo gem install --no-user-install bundler
+          gpg --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+          curl -sSL https://get.rvm.io | bash -s stable --ruby
+          source $HOME/.rvm/scripts/rvm
+          rvm install ${{ env.RUBY_VERSION }}
+          rvm use ${{ env.RUBY_VERSION }} --default
+          gem install bundler
+
       - name: Fetch Data
         working-directory: ./scrapper
         env:
           SITE_URL1: ${{vars.site_url1}}
           SITE_URL2: ${{vars.site_url2}}
         run: |
-          sudo bundle install
+          source $HOME/.rvm/scripts/rvm
+          bundle install
           mkdir {urls,data}
           ruby scrapper.rb
       - name: Setup NPM
