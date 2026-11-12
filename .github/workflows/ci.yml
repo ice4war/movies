@@ -25,13 +25,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ruby-full build-essential zlib1g-dev
           sudo gem install --no-user-install bundler
+          sudo bundle install
       - name: Fetch Data
         working-directory: ./scrapper
         env:
           SITE_URL1: ${{vars.site_url1}}
           SITE_URL2: ${{vars.site_url2}}
         run: |
-          bundle install && mkdir {urls,data}
+          mkdir {urls,data}
           ruby scrapper.rb
       - name: Setup NPM
         uses: actions/setup-node@v6
