@@ -21,10 +21,10 @@ jobs:
         with:
           submodules: recursive
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1.313.0
-        with:
-          ruby-version: 3.4.8
-          bundler-cache: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby-full build-essential zlib1g-dev
+          gem install bundler
       - name: Fetch Data
         working-directory: ./scrapper
         env:
