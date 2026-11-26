@@ -14,14 +14,14 @@ permissions:
   pages: write
 jobs:
   build-pages:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.3
         with:
           submodules: recursive
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1.313.0
         with:
           ruby-version: 3.4.8
           bundler-cache: true
