@@ -1,7 +1,7 @@
 name: Update Site
 on:
-  schedule:
-   - cron: "0 0 */1 * *" # everyday
+#   schedule:
+#    - cron: "0 12 * * */1" # everyday
   workflow_dispatch:
 
 concurrency:
@@ -13,14 +13,14 @@ permissions:
   pages: write
 jobs:
   build-pages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.3
         with:
           submodules: recursive
       - name: Setup Ruby
-        uses: ruby/setup-ruby@v1.313.0
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.4.8
           bundler-cache: true
@@ -47,7 +47,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build-pages
     steps:
       - name: Deploy to GitHub Pages
